@@ -400,7 +400,7 @@ int capture_frames(struct camera_ctx *cctx, struct stream_ctx *sctx, struct pipe
 
         // Send frame for processing
         if (image_processor(&yuyv, cctx, sctx, pipeline) != 0) {
-            perror("camera: Error sending YUYV frame for processing");
+            perror("camera: Error processing frame");
         }
   
         // 3. Requeue the buffer to be filled again
@@ -410,7 +410,7 @@ int capture_frames(struct camera_ctx *cctx, struct stream_ctx *sctx, struct pipe
         }
     } 
 
-    printf("Capture stopped.\n");
+    printf("camera: Capture stopped.\n");
     return 0;
 }
 

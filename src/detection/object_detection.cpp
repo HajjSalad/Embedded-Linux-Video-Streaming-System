@@ -1,5 +1,5 @@
 /**
-* @file detection.c
+* @file object_detection.cpp
 * @brief TensorFlow Lite–based object detection module.
 *
 * This file implements the object detection subsystem, including:
@@ -22,7 +22,10 @@
 #define MODEL_PATH  "src/detection/models/detect.tflite"
 
 // Static function prototypes
-static int resize_rgb_frame_nn();
+static int resize_rgb_frame_nn(const struct rgb_frame *src,
+                               uint8_t *dst,
+                               int dst_w,
+                               int dst_h);
 static void draw_box(struct rgb_frame *rgb,
                      int x0, int y0,
                      int x1, int y1,
@@ -121,7 +124,7 @@ int detector_init(struct detector_ctx *dctx)
 *   Values in the range [0.0, 1,0]
 *
 * @param dctx   Pointer to the initialized detector context
-* @param rgb  Pointer to the RGB frame to run detection on
+* @param rgb    Pointer to the RGB frame to run detection on
 * @param result Pointer to the struct to store the detection outputs
 */
 int run_object_detection(struct detector_ctx *dctx,
@@ -147,7 +150,7 @@ int run_object_detection(struct detector_ctx *dctx,
     // 2. Resize the frame and place into model input tensor (300x300 RGB)
     uint8_t *input_data = interp->typed_input_tensor<uint8_t>(0);
 
-    if (resize_rgb_frame_nn(frame, input_data, 300, 300) != 0) {
+    if (resize_rgb_frame_nn(rgb, input_data, 300, 300) != 0) {
         printf("run_object_detection: frame resize failed\n");
         return -1;
     }
@@ -179,36 +182,74 @@ int run_object_detection(struct detector_ctx *dctx,
 
     printf("run_detection: Detected %d objects\n", result->num_detections);
 
+    // Return # of detections
     return result->num_detections;
 }
 
-// Later
+/**
+* @brief Resize an RGB frame using nearest-neighbour sampling.
+*
+* This function converts a source RGB frame (ex. 640x480) into a destination 
+* buffer of size dst_w x dst_h (ex. 300x300) by mapping each destination 
+* pixel to the nearest corresponding pixel in the source image.
+*
+* @param src     Source RGB frame (width x height x 3)
+* @param dst     Destination buffer (dst_w x dst_h x 3)
+* @param dst_w   Destination width
+* @param dst_h   Destination height
+*/
 static int resize_rgb_frame_nn(const struct rgb_frame *src,
                                uint8_t *dst,
                                int dst_w,
                                int dst_h)
 {
+    // Validate input pointers
     if (!src || !src->data || !dst) {
         return -1;
     }
 
-    const int src_w = src->width;       // 640
-    const int src_h = src->height;      // 480
-    const int channels = 3;
+    const int src_w = src->width;       // ex. 640
+    const int src_h = src->height;      // ex. 480
+    const int channels = 3;             // RGB
 
     /**
-    * Reverse-engineer: Start with the desired size and fill from the source
+    * Nearest-neighbour resize strategy:
+    *
+    * We iterate over every pixel in the destination image and determine which pixel
+    * in the source image it corresponds to.
+    *
+    * Mapping Logic:
+    *   - x / dst_w gives relative horizontal position in the destination [0, 1)
+    *   - y / dst_h gives relative vertical position in the destination [0, 1)
+    *   - These relative positions are scaled by src_w and src_h to obtain the 
+    *     corresponding source pixel coordinates.
+    *
+    * Linear indexing (row-major layout):
+    *   - Pixel index = y * width + x
+    *   - Each pixel has 'channels' bytes (3 for RGB), so:
+    *      byte_index = (y * width + x) * channels
+    *
+    * Integer division automatically floors the result, giving us nearest-neighbour sampling.
     */
     for (int y=0; y < dst_h; y++) {
         for (int x=0; x < dst_w; x++) {
 
-            // Map destination pixel to source pixel
-            int src_x = x * src_w / dst_x;
-            int src_y = y * src_y / dst_y;
+            /** 
+            * Map destination pixel (x, y) to source pixel (src_x, src_y) 
+            * 
+            * We compute (x * src_w) / dst_w instead of (x / dst_w) * src_w because integer 
+            * division in C truncates towards zero. 
+            * Multiplying first preserves precision before truncation, yielding correct 
+            * nearest-neighbour sampling.
+            */
+            int src_x = x * src_w / dst_w;      
+            int src_y = y * src_h / dst_h;      
 
+            // Compute linear indices into source and destination buffers
             int src_idx = (src_y * src_w + src_x) * channels;
             int dst_idx = (y * dst_w + x) * channels;
 
+            // Copy RGB values from source to destination
             dst[dst_idx + 0] = src->data[src_idx + 0];  // R
             dst[dst_idx + 1] = src->data[src_idx + 1];  // G
             dst[dst_idx + 2] = src->data[src_idx + 2];  // B
@@ -231,6 +272,7 @@ static int resize_rgb_frame_nn(const struct rgb_frame *src,
 void draw_detections(struct rgb_frame *rgb,
                      struct detection_result *result)
 {
+    // Validate input pointers
     if (!rgb || !rgb->data || !result){
         return;
     }
@@ -312,13 +354,15 @@ static inline void draw_pixel(struct rgb_frame *rgb,
                               int x, int y,
                               uint8_t r, uint8_t g, uint8_t b)
 {
+    // Bounds check to prevent out-of-bounds memory access
     if (x < 0 || x >= rgb->width || y < 0 || y >= rgb->height) {
         return;
     }
 
-    // Go to row y, pixel x
+    // Go to row y, pixel x -> Compute pointer to pixel (x,y)
     uint8_t *p = rgb->data + y * rgb->stride + x * 3;
     
+    // Overwrite pixel color; r=255, g=0, b=0
     p[0] = r;
     p[1] = g;
     p[2] = b;
