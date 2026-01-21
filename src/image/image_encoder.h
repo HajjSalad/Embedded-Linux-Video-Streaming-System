@@ -29,7 +29,8 @@ struct rgb_frame {
     unsigned char *data;    /**< Pointer to raw RGB24 frame data */
     unsigned int width;     /**< Frame width in pixels */
     unsigned int height;    /**< Frame height in pixels */
-    unsigned long size;     /**< Size in bytes (width * height * 3) */
+  //  unsigned long size;     /**< Size in bytes (width * height * 3) */
+    unsigned int stride;    /**< Number of bytes per row */
 };
 
 /**

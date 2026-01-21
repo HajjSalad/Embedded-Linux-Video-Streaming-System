@@ -84,6 +84,7 @@ int image_processor(struct yuyv_frame *yuyv,
 
     // 2. Detect motion between current and previous frames
     bool motion_detected = detect_motion(&prev_frame, &rgb);
+    
     // Update previous frame for next iteration
     update_previous_frame(&rgb);
 
@@ -123,12 +124,43 @@ cleanup:
     return -1;
 }
 
-static void copy_rgb_frame()
+/**
+* @brief Create a deep copy of an RGB frame.
+*
+* Allocates a new pixel buffer for the destination frame and copies
+* all metadata and pixel data from the source frame.
+*
+* @param src   Pointer to the source RGB frame to copy from
+* @param dst   Pointer to the destination RGB frame to copy to
+*
+* @return 0 on success, -1 on failure
+*/
+static int copy_rgb_frame(struct rgb_frame *src, struct rgb_frame *dst)
 {
+    if (!src || !src->data || !dst) {
+        return -1;
+    }
 
+    // Tota size in bytes of the RGB frame
+    const size_t size = src->stride * src->height;
+
+    dst->weight = src->width;
+    dst->height = src->height;
+    dst->stride = src->stride;
+
+    // Allocate destination pixel buffer
+    dst->data = malloc(size);
+    if (!dst->data) {
+        return -1;  
+    }
+
+    // Copy pixel data from source to destination
+    memcpy(dst->data, src->data, size);
+
+    return 0;
 }
 
-static void update_previous_frame()
+static void update_previous_frame(struct rgb_frame *curr_frame)
 {
 
 }

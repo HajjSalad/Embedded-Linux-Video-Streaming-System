@@ -7,9 +7,16 @@
 #define DETECTOR_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /** @brief */
 #define MAX_DETECTIONS  5
+
+/** @brief Subsampling factor for motion detection */
+#define SUBSAMPLE_FACTOR 4
+
+/** @brief Threshold for motion detection */
+#define MOTION_THRESHOLD 30
 
 /** @brief Context structure for the object detection module */
 struct detector_ctx {
@@ -46,6 +53,9 @@ struct detection_result {
 };
 
 /** Function Prototypes */
+bool detect_motion(struct rgb_frame *prev_frame, 
+                   struct rgb_frame *curr_frame);
+
 int detector_init(struct detector_ctx *dctx);
 void run_object_detection(struct detector_ctx *dctx,
                           struct rgb_frame *rgb,
