@@ -12,10 +12,7 @@ This project demonstrates end-to-end system design across kernel space and user 
 👉 Explore the generated docs: [Doxygen Documentation](https://hajjsalad.github.io/RaspberryPi-Cam-Streamer/html/index.html)      
 👉 Explore how the documentation was structured and written: [Notes on Notion](https://www.notion.so/hajjsalad/Doxygen-Documentation-2dea741b5aab809989afdaf9d198430b).  
 👉 Each key feature includes a link to in-depth implementation notes that describe how the module was designed and built.
-
-```
-This repository contains the backend implementation. The Android frontend is maintained in a separate repository: [Android Frontend repo](https://github.com/HajjSalad/RaspberryPi-Android-Video-Streaming)
-```
+👉 This repository contains the backend implementation. The Android frontend is maintained in a separate repository: [Android Frontend repo](https://github.com/HajjSalad/RaspberryPi-Android-Video-Streaming)
 
 #### 🗝️ System Components
 The backend is organized into five core components:     
@@ -83,7 +80,7 @@ This design allows for **producer thread** to run continously, while a new **con
 `Edge AI` · `Object Detection` · `Embedded ML` · `TensorFlow Lite` · `Real-time Inference`. 
 
 ---
-### 📡 MJPEG HTTP Streaming**
+### 📡 MJPEG HTTP Streaming
 [Notes on Notion](https://www.notion.so/hajjsalad/MJPEG-HTTP-Streaming-2cca741b5aab80d9ab6beddf8d86db00)
 
 - Lightweight HTTP server for serving video streams
