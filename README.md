@@ -41,13 +41,13 @@ The backend is organized into five core components:
 
 --- 
 ### 🔌 Custom Linux Kernel Module
-[Notes on Notion](https://www.notion.so/hajjsalad/Cam-Stream-Kernel-Module-2cca741b5aab80e1bddbe204e5e99eae)  
-
+[Notes on Notion](https://www.notion.so/hajjsalad/Cam-Stream-Kernel-Module-2cca741b5aab80e1bddbe204e5e99eae)   
 - Character device driver exposing camera control and LED status signaling via `ioctl`
 - Well-defined kernel ↔ user-space interface with minimal surface area
 - GPIO-driven LED indicators reflecting real-time camera streaming state
 
 `GPIO` · `IOCTL` · `Character device` · `Linux kernel` · `kernel ↔ user space interface`
+
 ---
 ### 📸 V4L2-Based Camera Pipeline
 [Notes on Notion](https://www.notion.so/hajjsalad/V4L2-Streaming-Pipeline-2cca741b5aab80be8b30e62d9311b929)
@@ -57,6 +57,7 @@ The backend is organized into five core components:
 - Continuous frame capture with explicit buffer dequeue and re-queue operations   
 
 `V4L2` · `Camera drivers` · `MMAP` · `Buffer management` · `Video streaming`
+
 ---
 ### 🔄 Multithreaded Producer-Consumer Architecture
 - Producer Thread
@@ -71,8 +72,8 @@ The backend is organized into five core components:
   
 This design allows for **producer thread** to run continously, while a new **consumer thread** is spawned per client.
 
-
 `Mutex` · `Semaphore` · `Circular buffers` · `Multithreading` · `Producer-consumer model`
+
 ---
 ### 🖼️ Image Processing Pipeline
 [Notes on Notion](https://www.notion.so/hajjsalad/Object-Detection-2d2a741b5aab80ac958fc72ffb4de8a4)
@@ -80,6 +81,7 @@ This design allows for **producer thread** to run continously, while a new **con
 - Optimized for real-time edge deployment on the Raspberry Pi    
 
 `Edge AI` · `Object Detection` · `Embedded ML` · `TensorFlow Lite` · `Real-time Inference`. 
+
 ---
 ### 📡 MJPEG HTTP Streaming**
 [Notes on Notion](https://www.notion.so/hajjsalad/MJPEG-HTTP-Streaming-2cca741b5aab80d9ab6beddf8d86db00)
@@ -90,6 +92,7 @@ This design allows for **producer thread** to run continously, while a new **con
 `HTTP` · `MJPEG` · `Sockets` · `Lightweight server` · `Multipart streams`
 
 ---
+
 ### 🏗️ High Level Flow
 ![Block Diagram](./Pi_cam_stream_Block_diagram.png)   
 
