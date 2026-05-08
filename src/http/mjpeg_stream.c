@@ -39,8 +39,7 @@ static int send_mjpeg_frame(struct jpeg_frame *frame, struct stream_ctx *sctx);
 * 
 * @return 0 on success, negative value on error
 */
-int send_frames(struct camera_ctx *cctx, 
-                struct stream_ctx *sctx, 
+int send_frames(struct stream_ctx *sctx, 
                 struct pipeline_ctx *pipe) 
 {
     struct jpeg_frame *jpeg = NULL;
@@ -111,7 +110,7 @@ static int send_mjpeg_frame(struct jpeg_frame *frame, struct stream_ctx *sctx)
     }
 
     // 2. Send JPEG binary payload
-    if (write(sctx->client_fd, frame->data, frame->size) != (size_t)frame->size) {
+    if (write(sctx->client_fd, frame->data, frame->size) != (ssize_t)frame->size) {
         return -3;      // payload write error
     }
 

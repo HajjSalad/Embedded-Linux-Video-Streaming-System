@@ -18,6 +18,16 @@
 /** @brief Threshold for motion detection */
 #define MOTION_THRESHOLD 30
 
+/** @brief Path to the TensorFlow Lite SSD MobileNet model */
+#define MODEL_PATH  "src/detection/models/detect.tflite"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Forward declaration
+struct rgb_frame;
+
 /** @brief Context structure for the object detection module */
 struct detector_ctx {
     void *model;                /**< tflite::FlatBufferModel* */
@@ -53,14 +63,23 @@ struct detection_result {
 };
 
 /** Function Prototypes */
-bool detect_motion(struct rgb_frame *prev_frame, 
-                   struct rgb_frame *curr_frame);
+// Motion detection
+bool detect_motion(struct rgb_frame *curr_frame);
+bool detect_motion_sad(struct rgb_frame *prev_frame, 
+                       struct rgb_frame *curr_frame);
+int copy_rgb_frame(struct rgb_frame *src, struct rgb_frame *dst);
 
+
+// Object detection
 int detector_init(struct detector_ctx *dctx);
-void run_object_detection(struct detector_ctx *dctx,
+int run_object_detection(struct detector_ctx *dctx,
                           struct rgb_frame *rgb,
                           struct detection_result *result);
-void draw_detections(struct rgb_frame *rgb,
+void draw_detection(struct rgb_frame *rgb,
                      struct detection_result *result);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif  // DETECTOR_H

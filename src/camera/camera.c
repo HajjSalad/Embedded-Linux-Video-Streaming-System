@@ -1,8 +1,8 @@
 /**
-* @file camera.c
+* @file  camera.c
 * @brief Implementation of the V4L2 camera initialization and teardown routines.
 *
-* This module handles low-level operations required to prepare a V4L2 camera
+* This module handles low-level operations required to prepare the V4L2 camera
 * device for streaming, including:
 *   1. Opening control module /dev/cam_stream
 *   2. Opening camera device /dev/video0
@@ -36,6 +36,7 @@
 #include "cam_stream_ioctl.h"
 #include "http/mjpeg_stream.h"
 #include "image/image_encoder.h"
+#include "detection/detection.h"
 #include "image/image_processor.h"
 
 /** @brief Internal helper functions.  */
@@ -376,7 +377,10 @@ static int start_stream(struct camera_ctx *cctx)
 *
 * @return 0 on success, negative value on error.
 */
-int capture_frames(struct camera_ctx *cctx, struct stream_ctx *sctx, struct pipeline_ctx *pipeline) 
+int capture_frames(struct camera_ctx *cctx,
+                   struct stream_ctx *sctx, 
+                   struct pipeline_ctx *pipeline, 
+                   struct detector_ctx *dctx) 
 {
     for (;;) {
         // Prepare the buffer struct
@@ -399,7 +403,7 @@ int capture_frames(struct camera_ctx *cctx, struct stream_ctx *sctx, struct pipe
         yuyv.size = yuyv.width * yuyv.height * 2;
 
         // Send frame for processing
-        if (image_processor(&yuyv, cctx, sctx, pipeline) != 0) {
+        if (image_processor(&yuyv, cctx, sctx, pipeline, dctx) != 0) {
             perror("camera: Error processing frame");
         }
   

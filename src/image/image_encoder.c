@@ -39,9 +39,11 @@ int convert_yuyv_to_rgb(const struct yuyv_frame *yuyv,
 
     rgb->width  = yuyv->width;
     rgb->height = yuyv->height;
-    rgb->size   = yuyv->width * yuyv->height * 3;
+    rgb->stride = yuyv->width * 3;
 
-    rgb->data = malloc(rgb->size);              // Allocate memory for the pixel data
+    size_t size   = rgb->height * rgb->stride;
+
+    rgb->data = malloc(size);                   // Allocate memory for the pixel data
     if (!rgb->data) return -1;
 
     const unsigned char *src = yuyv->data;      // The data is const. You can move the pointer
@@ -51,8 +53,8 @@ int convert_yuyv_to_rgb(const struct yuyv_frame *yuyv,
     *       - Process 2 pixels
     *       - Consumes 4 bytes of YUYV
     *       - Produces 6 bytes of RGB (2 pixels x 3 channels) */
-    for (int y=0; y < yuyv->height; y++) {
-        for (int x=0; x < yuyv->width; x += 2) {
+    for (unsigned int y=0; y < yuyv->height; y++) {
+        for (unsigned int x=0; x < yuyv->width; x += 2) {
 
             int y0 = src[0];
             int u  = src[1];

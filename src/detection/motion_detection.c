@@ -7,10 +7,81 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <stdbool.h>
+
 
 #include "detection.h"
 #include "image/image_encoder.h"
+
+/**
+* @brief
+*
+*
+*
+*
+*
+*/
+bool detect_motion(struct rgb_frame *curr_frame) 
+{
+    static struct rgb_frame prev_frame = {0};   // persistent previous frame
+
+    // First frame: initialize previous frame and return "no motion"
+    if (!prev_frame.data) {
+        copy_rgb_frame(curr_frame, &prev_frame);
+        return false;
+    }
+
+    bool motion = detect_motion_sad(&prev_frame, curr_frame);
+
+    // Update previous frame for next iteration
+    copy_rgb_frame(curr_frame, &prev_frame);
+
+    return motion;
+}
+
+/**
+* @brief Create a deep copy of an RGB frame.
+*
+* Allocates a new pixel buffer for the destination frame and copies
+* all metadata and pixel data from the source frame.
+*
+* @param src   Pointer to the source RGB frame to copy from
+* @param dst   Pointer to the destination RGB frame to copy to
+*
+* @return 0 on success, -1 on failure
+*/
+int copy_rgb_frame(struct rgb_frame *src, struct rgb_frame *dst)
+{
+    if (!src || !src->data || !dst) {
+        return -1;
+    }
+
+    // Total size in bytes of the RGB frame
+    const size_t size = src->stride * src->height;
+
+    // Free existing destination data if any
+    if (dst->data) {
+        free(dst->data);
+        dst->data = NULL;
+    }
+
+    dst->width = src->width;
+    dst->height = src->height;
+    dst->stride = src->stride;
+
+    // Allocate destination pixel buffer
+    dst->data = malloc(size);
+    if (!dst->data) {
+        return -1;  
+    }
+
+    // Copy pixel data from source to destination
+    memcpy(dst->data, src->data, size);
+
+    return 0;
+}
 
 /**
 * @brief Detect motion between two consecutive RGB frames.
@@ -40,12 +111,11 @@
 *   - 20-40 : noticeable motion
 *   - >50   : significant motion
 *
-* @param prev_frame   Pointer to the previous RGB frame
 * @param curr_frame   Pointer to the current RGB frame
 *
 * @return true if motion is detected, false otherwise
 */
-bool detect_motion(struct rgb_frame *prev_frame, struct rgb_frame *curr_frame) 
+bool detect_motion_sad(struct rgb_frame *prev_frame, struct rgb_frame *curr_frame) 
 {
     if (!prev_frame || !curr_frame) {
         printf("detect_motion: Invalid arguments\n");

@@ -24,12 +24,25 @@ struct yuyv_frame {
 * @brief Container for an RGB24 image frame
 *
 * Holds an RGB image converted from a YUYV422 source frame
+*
+* width:  Number of pixels per row
+* stride: Number of bytes between the start of row n and row n+1
+* therefore, for RGB24:
+*   logical row size = width * 3 bytes
+*   stride           = width * 3 bytes + padding (if any)
+*
+* Padding can exist because of:
+*   - DMA alignment (very common)
+*   - SIMD alignment (16 / 32 / 64 bytes)
+*   - Hardware camera requirements
+*   - GPU-friendly row alignment
+*
+* size = height * stride : Calculated at the point of use because stride may vary.
 */
 struct rgb_frame {
     unsigned char *data;    /**< Pointer to raw RGB24 frame data */
     unsigned int width;     /**< Frame width in pixels */
     unsigned int height;    /**< Frame height in pixels */
-  //  unsigned long size;     /**< Size in bytes (width * height * 3) */
     unsigned int stride;    /**< Number of bytes per row */
 };
 

@@ -13,13 +13,13 @@
 #include <cstring>
 
 #include "detection.h"
+#include "image/image_encoder.h"
 
 #include <tensorflow/lite/model.h>
 #include <tensorflow/lite/interpreter.h>
 #include <tensorflow/lite/kernels/register.h>
 
-/** @brief Path to the TensorFlow Lite SSD MobileNet model */
-#define MODEL_PATH  "src/detection/models/detect.tflite"
+extern "C" {
 
 // Static function prototypes
 static int resize_rgb_frame_nn(const struct rgb_frame *src,
@@ -147,10 +147,18 @@ int run_object_detection(struct detector_ctx *dctx,
     int input_index = interp->inputs()[0];
     TfLiteTensor *input_tensor = interp->tensor(input_index);
 
+    if (input_tensor->type != kTfLiteUInt8) {
+        printf("run_object_detection: unsupported input type\n");
+        return -1;
+    }
+
+    int input_h = input_tensor->dims->data[1];
+    int input_w = input_tensor->dims->data[2];
+
     // 2. Resize the frame and place into model input tensor (300x300 RGB)
     uint8_t *input_data = interp->typed_input_tensor<uint8_t>(0);
 
-    if (resize_rgb_frame_nn(rgb, input_data, 300, 300) != 0) {
+    if (resize_rgb_frame_nn(rgb, input_data, input_w, input_h) != 0) {
         printf("run_object_detection: frame resize failed\n");
         return -1;
     }
@@ -158,7 +166,7 @@ int run_object_detection(struct detector_ctx *dctx,
     // 3. Run inference
     if (interp->Invoke() != kTfLiteOk) {
         printf("run_object_detection: Inference failed\n");
-        return;
+        return -1;
     }
 
     // 4. Read output tensors: boxes, class IDs, scores, detection counts   // Shape of output tensor -> how many elements
@@ -269,7 +277,7 @@ static int resize_rgb_frame_nn(const struct rgb_frame *src,
 * @param rgb    Pointer to the RGB frame to draw on
 * @param result Pointer to detection results containing bounding boxes
 */
-void draw_detections(struct rgb_frame *rgb,
+void draw_detection(struct rgb_frame *rgb,
                      struct detection_result *result)
 {
     // Validate input pointers
@@ -367,3 +375,5 @@ static inline void draw_pixel(struct rgb_frame *rgb,
     p[1] = g;
     p[2] = b;
 }
+
+} // extern "C"

@@ -1,5 +1,5 @@
 /**
-* @file image_processor.c
+* @file  image_processor.c
 * @brief Image processing stage of the camera streaming pipeline.
 *
 * This modules implements the core image processing pipeline used by the procuder thread.
@@ -56,14 +56,16 @@ int image_processor(struct yuyv_frame *yuyv,
                     struct pipeline_ctx *pipe,
                     struct detector_ctx *dctx)
 {
+    // Validate input pointers
     if (!yuyv || !cctx || !sctx || !pipe || !dctx) {
         printf("image_processor: Invalid arguments\n");
         return -1;
     }
 
-    struct rgb_frame rgb = {0};                            // Original RGB frame (640x480)
-    struct rgb_frame rgb_for_detection = {0};              // Copy of RGB frame for object detection
-    struct detection_result result = {0};                  
+    struct rgb_frame rgb = {0};                       // Original RGB frame (640x480)
+    struct rgb_frame rgb_for_detection = {0};         // Copy of RGB frame for object detection
+    struct detection_result result = {0};             // Detection results
+                    
     struct jpeg_frame *jpeg = calloc(1, sizeof(*jpeg));    // Heap-allocated JPEG frame
     if (!jpeg) {
         printf("image_processor: Failed to allocate JPEG frame\n");
@@ -83,14 +85,14 @@ int image_processor(struct yuyv_frame *yuyv,
     }
 
     // 2. Detect motion between current and previous frames
-    bool motion_detected = detect_motion(&prev_frame, &rgb);
-    
-    // Update previous frame for next iteration
-    update_previous_frame(&rgb);
+    bool motion_detected = detect_motion(&rgb);
 
-    if (motion_detected) {
+    if (motion_detected) 
+    {
+        printf("image_processor: Motion detected, running object detection\n");
+        
         // 3. Run object detection on the copied RGB frame
-        int nd = run_object_detection(&dctx, &rgb_for_detection, &result);
+        int nd = run_object_detection(dctx, &rgb_for_detection, &result);
         if (nd < 0) {
             printf("image_processor: Object detection failed\n");
             // Proceed without annotations
@@ -113,54 +115,15 @@ int image_processor(struct yuyv_frame *yuyv,
 
     sem_post(pipe->sem);                             // Signal frame availability
 
+    // Cleanup
     free(rgb.data);
     free(rgb_for_detection.data);
     return 0;
 
 cleanup:
+    // Cleanup on error
     free(rgb.data);
     free(rgb_for_detection.data);
     free(jpeg);
     return -1;
-}
-
-/**
-* @brief Create a deep copy of an RGB frame.
-*
-* Allocates a new pixel buffer for the destination frame and copies
-* all metadata and pixel data from the source frame.
-*
-* @param src   Pointer to the source RGB frame to copy from
-* @param dst   Pointer to the destination RGB frame to copy to
-*
-* @return 0 on success, -1 on failure
-*/
-static int copy_rgb_frame(struct rgb_frame *src, struct rgb_frame *dst)
-{
-    if (!src || !src->data || !dst) {
-        return -1;
-    }
-
-    // Tota size in bytes of the RGB frame
-    const size_t size = src->stride * src->height;
-
-    dst->weight = src->width;
-    dst->height = src->height;
-    dst->stride = src->stride;
-
-    // Allocate destination pixel buffer
-    dst->data = malloc(size);
-    if (!dst->data) {
-        return -1;  
-    }
-
-    // Copy pixel data from source to destination
-    memcpy(dst->data, src->data, size);
-
-    return 0;
-}
-
-static void update_previous_frame(struct rgb_frame *curr_frame)
-{
-
 }

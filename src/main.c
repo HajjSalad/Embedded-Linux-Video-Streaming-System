@@ -22,8 +22,10 @@
 #include "camera/camera.h"
 #include "http/http_server.h"
 #include "http/mjpeg_stream.h"
+#include "http/request_manager.h"
 #include "cb/circular_buffer.h"
 #include "image/image_encoder.h"
+#include "detection/detection.h"
 #include "image/image_processor.h"
 
 /** @brief TCP port on which the HTTP MJPEG server listens. */
@@ -47,7 +49,7 @@ pthread_mutex_t mutexBuffer;
 static void* producer(void* args) {
     pipeline_ctx *pipeline = args;
 
-    if (capture_frames(pipeline->cctx, pipeline->sctx, pipeline) < 0) {
+    if (capture_frames(pipeline->cctx, pipeline->sctx, pipeline, pipeline->dctx) < 0) {
         perror("Producer breaking - Error in capturing frames");
     }
 
@@ -60,7 +62,7 @@ static void* consumer(void* args) {
 
     while(1) {
         sem_wait(&semData);                     // BLOCK if no data
-        if (send_frames(pipeline->cctx, pipeline->sctx, pipeline) < 0) {
+        if (send_frames(pipeline->sctx, pipeline) < 0) {
             perror("Consumer breaking - Error in sending frames");
             break;
         }
@@ -75,31 +77,38 @@ static void* consumer(void* args) {
 */
 int main(void) 
 {
-    circular_buffer_init(&cb);                  // Initialize circular buffer
+    struct camera_ctx   cctx = {0};             // Camera context (V4L2)
+    struct stream_ctx   sctx = {0};             // Streaming context (MJPEG)
+    struct detector_ctx dctx = {0};             // Object detector context
+    
+    circular_buffer_init(&cb);                  // Initialize circular buffer                 
     signal(SIGPIPE, SIG_IGN);                   // Ignore SIGPIPE to handle socket write error manually
-
-    struct camera_ctx cctx = {0};               // Camera context (V4L2)
-    struct stream_ctx sctx = {0};               // Streaming context (MJPEG)
 
     pthread_t producer_th;                      // Create storage for the thread
     pthread_t consumer_th;
 
     pthread_mutex_init(&mutexBuffer, NULL);     // Initialize the mutex
-    sem_init(&semData, 0, 0);                   // Initialize the semphore
+    sem_init(&semData, 0, 0);                   // Initialize the semaphore
 
     pipeline_ctx pipeline = {
         .cb = &cb,
         .mutex = &mutexBuffer,
         .sem = &semData,
         .cctx = &cctx,
-        .sctx = &sctx
+        .sctx = &sctx,
+        .dctx = &dctx
     };
 
-    // 1. Initialize the camera
+    // 1a. Initialize the camera
     if (camera_init(&cctx) < 0) {
-        fprintf(stderr, "Failed to initialize camera.\n");
+        printf("main: Failed to initialize camera.\n");
         return -1;
     }
+
+    // 1b. Initialize object detector
+    // if (detector_init(&dctx) < 0) {
+    //     printf("main: Failed to initialize detector.\n");
+    // }
 
     // 2. Start Producer Thread ONCE
     if (pthread_create(&producer_th, NULL, &producer, &pipeline) != 0) {
@@ -109,7 +118,7 @@ int main(void)
 
     // 3. Start HTTP server (bind to port 8080)
     if (start_http_server(&sctx, SERVER_PORT) < 0) {
-        fprintf(stderr, "main: Failed to start http server.\n");
+        printf("main: Failed to start http server.\n");
         close_camera(&cctx);
         return -1;
     }
@@ -121,26 +130,20 @@ int main(void)
 
         // 4a. Accept a browser connection
         if (accept_client_connection(&sctx) < 0) {
-            fprintf(stderr, "main: Failed to accept client.\n");
+            printf("main: Failed to accept client.\n");
             continue;       // keep server alive
         }
 
-        // 4b. Send HTTP multipart header
-        if (send_mjpeg_http_header(&sctx) < 0) {
-            fprintf(stderr, "main: Failed to send multipart header.\n");
+        // 4b. Read the HTTP request
+        char request_buffer[1024];
+        if(read_http_request(sctx.client_fd, request_buffer, sizeof(request_buffer)) < 0) {
+            printf("main: Failed to read HTTP request.\n");
             close(sctx.client_fd);
             continue;
         }
 
-        // 4c. Start Consumer thread
-        if (pthread_create(&consumer_th, NULL, &consumer, &pipeline) != 0) {
-            perror("Failed to create consumer thread");
-            close(sctx.client_fd);
-            continue;
-        }
-
-        // Wait ONLY for consumer 
-        pthread_join(consumer_th, NULL);
+        // 4c. Route to appropriate handler
+        handle_http_request(&sctx, &pipeline, request_buffer);
 
         printf("main: Client disconnected.\n\n");
 

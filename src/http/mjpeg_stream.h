@@ -23,6 +23,6 @@ struct stream_ctx {
 };
 
 /** Function Prototypes */
-int send_frames(struct camera_ctx *cctx, struct stream_ctx *sctx, struct pipeline_ctx *pipe);
+int send_frames(struct stream_ctx *sctx, struct pipeline_ctx *pipe);
 
 #endif  // MJPEG_STREAM_H

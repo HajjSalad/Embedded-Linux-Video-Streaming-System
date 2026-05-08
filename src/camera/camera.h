@@ -7,6 +7,7 @@
 */
 
 #include <stddef.h>
+#include <time.h>
 #include <linux/videodev2.h>
 
 /** @brief Path to the LED/camera control deivce. */
@@ -19,6 +20,7 @@
 struct stream_ctx;
 struct yuyv_frame;
 struct pipeline_ctx;
+struct detector_ctx;
 
 /**
 * @brief Describes a single memory-mapped video buffer.
@@ -55,6 +57,9 @@ struct camera_ctx {
 /** Function Prototypes */
 int camera_init(struct camera_ctx *cctx);
 void close_camera(struct camera_ctx *cctx);
-int capture_frames(struct camera_ctx *cctx, struct stream_ctx *sctx, struct pipeline_ctx *pipeline);
+int capture_frames(struct camera_ctx *cctx,
+                   struct stream_ctx *sctx, 
+                   struct pipeline_ctx *pipeline, 
+                   struct detector_ctx *dctx);
 
 #endif /* CAMERA_H */

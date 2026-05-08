@@ -38,11 +38,12 @@ int start_http_server(struct stream_ctx *sctx, unsigned short port)
     int opt = 1;
     struct sockaddr_in addr;        // Internet IPv4 socket address
 
-    /* 1. Create an IPv4 TCP socket.
-    *  socket() arguements:
-    *   1. domain: AF_INET (protocol family) -> IPv4 Internet protocol
-    *   2. socket type: SOCK_STREAM -> connection-oriented stream (TCP)
-    *   3. protocol = 0; -> exact protocol inside selected domain + type.
+    /** 
+     * 1. Create an IPv4 TCP socket.
+     *  - Socket() arguements:
+     *      1. domain: AF_INET (protocol family) -> IPv4 Internet protocol
+     *      2. socket type: SOCK_STREAM -> connection-oriented stream (TCP)
+     *      3. protocol = 0; -> exact protocol inside selected domain + type.
     */
     sctx->server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (sctx->server_fd < 0) {
@@ -58,13 +59,13 @@ int start_http_server(struct stream_ctx *sctx, unsigned short port)
         return -1;
     }
 
-    /* 3. Prepare server address structure */
+    /*  Prepare server address structure */
     memset(&addr, 0, sizeof(addr));
     addr.sin_family       = AF_INET;            // IPv4
     addr.sin_addr.s_addr  = htonl(INADDR_ANY);  // Listen on all interfaces
     addr.sin_port         = htons(port);        // Convert port to network byte order
 
-    /* Bind the socket to the chosen address + port */
+    /* 3. Bind the socket to the chosen address + port */
     if (bind(sctx->server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
         perror("http_server: bind");
         close(sctx->server_fd);
@@ -112,7 +113,7 @@ int accept_client_connection(struct stream_ctx *sctx)
         printf("http_server: Accepted connection from <unknown>\n");
     }
     
-    return sctx->client_fd;
+    return 0;
 }
 
 /**

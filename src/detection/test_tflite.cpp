@@ -11,9 +11,9 @@
 * @note This file is not included in the final application binary.
 */
 
-#include <tensorflow/lite/interpreter.h>
-#include <tensorflow/lite/model.h>
+// #include <tensorflow/lite/interpreter.h>
+// #include <tensorflow/lite/model.h>
 
-int main() { 
-    return 0; 
-}
+// int main() { 
+//     return 0; 
+// }

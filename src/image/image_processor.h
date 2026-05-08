@@ -31,12 +31,14 @@ typedef struct pipeline_ctx {
     sem_t *sem;                     /**< Counting semaphore for frame availability */           
     struct camera_ctx *cctx;        /**< Pointer to the camera context */
     struct stream_ctx *sctx;        /**< Pointer to the streaming context */
+    struct detector_ctx *dctx;      /**< Pointer to the detector context */
 } pipeline_ctx;
 
 /** Function prototypes */
 int image_processor(struct yuyv_frame *yuyv, 
                     struct camera_ctx *cctx, 
                     struct stream_ctx *sctx,
-                    struct pipeline_ctx *pipe);
+                    struct pipeline_ctx *pipe,
+                    struct detector_ctx *dctx);
 
 #endif      /* IMAGE_PROCESSOR_H */
