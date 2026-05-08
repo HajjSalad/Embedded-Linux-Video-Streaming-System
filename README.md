@@ -1,60 +1,52 @@
-## 📸 Real-Time Camera Streaming with Object Detection
-A real-time camera streaming system built on a Raspberry Pi that integrates a custom Linux kernel module, a multithreaded user-space capture pipeline, MJPEG HTTP streaming, and optional on-device object detection using TensorFlow Lite.
+## 📸 Real-Time Embedded Linux Video Streaming System
+A real-time camera streaming system built on a Raspberry Pi that integrates a custom Linux kernel module, a multithreaded user-space capture pipeline, image processing, and MJPEG HTTP streaming.
 
 This project demonstrates end-to-end system design across kernel space and user space. It combines Linux interfaces (V4L2, IOCTL, MMAP) with concurrent data pipelines and computer vision inference.
-
-💡 **Additional Notes**: Each key feature includes a link to **in-depth implementation notes** that describe how the module was designed and built.
 
 #### 🌿 Branches 
 - `main` - Stable, fully integrated version of the project
 - `stream` - Core camera capture and MJPEG streaming pipeline
 - `stream_detect` - Streaming pipeline with on-device object detection
 - `gh-pages` - Generated documentation hosted via github pages
-
-📝 **Documentation**: The project includes **comprehensive Doxygen documentation** covering modules, functions, classes and detailed usage.       
-
+ 
 👉 Explore the generated docs: [Doxygen Documentation](https://hajjsalad.github.io/RaspberryPi-Cam-Streamer/html/index.html)      
 👉 Explore how the documentation was structured and written: [Notes on Notion](https://www.notion.so/hajjsalad/Doxygen-Documentation-2dea741b5aab809989afdaf9d198430b)
+👉 Each key feature includes a link to in-depth implementation notes that describe how the module was designed and built.
 
-### 🗝️ Key Features  
-1. **Custom Linux Kernel Module**  [Notes on Notion](https://www.notion.so/hajjsalad/Cam-Stream-Kernel-Module-2cca741b5aab80e1bddbe204e5e99eae)  
+```This repository contains the backend implementation. The Android frontend is maintained in a separate repository: [Android Frontend repo](https://github.com/HajjSalad/RaspberryPi-Android-Video-Streaming)
+```
+
+#### System Components
+The backend is organized into five core components:     
+- 🔌 **Kernel Device Driver** - Custom Linux character device driver (/dev/cam_stream) providing camera control and GPIO hardware abstraction via ioctl interface, with LED indicators for streaming state.     
+- 📸 **V4L2 Camera Pipeline** - Low-level camera interfacing via Video4Linux2 API, handling device initialization, format negotiation (YUYV422 @ 640×480), MMAP buffer allocation, and continuous zero-copy frame capture.    
+- 🔄 **Multithreaded Producer-Consumer Pipeline** - Producer thread captures and encodes frames into a mutex-protected circular buffer; consumer threads stream frames to connected clients. Semaphore-based synchronization ensures efficient frame handoff.    
+- 🖼️ **Image Processing Pipeline** - Multi-stage processing: YUYV422 → RGB24 color space conversion (BT.601), motion detection via frame differencing (SAD), TensorFlow Lite object detection (MobileNet-SSD), and JPEG compression (libjpeg).    
+- 📡 **MJPEG HTTP Streaming** - Lightweight TCP-based HTTP server bound to port 8080, handling client connections, routing requests via request manager, and delivering continuous MJPEG streams using multipart/x-mixed-replace protocol.   
+
+--- 
+### 🔌 Custom Linux Kernel Module
+[Notes on Notion](https://www.notion.so/hajjsalad/Cam-Stream-Kernel-Module-2cca741b5aab80e1bddbe204e5e99eae)  
 
 - Character device driver exposing camera control and LED status signaling via `ioctl`
 - Well-defined kernel ↔ user-space interface with minimal surface area
 - GPIO-driven LED indicators reflecting real-time camera streaming state
 
 `GPIO` · `IOCTL` · `Character device` · `Linux kernel` · `kernel ↔ user space interface`
-
-2. **V4L2-Based Camera Pipeline**  [Notes on Notion](https://www.notion.so/hajjsalad/V4L2-Streaming-Pipeline-2cca741b5aab80be8b30e62d9311b929)
+---
+### 📸 V4L2-Based Camera Pipeline
+[Notes on Notion](https://www.notion.so/hajjsalad/V4L2-Streaming-Pipeline-2cca741b5aab80be8b30e62d9311b929)
 
 - Camera configuration using V4L2 API, including format negotiation and stream parameters
 - Buffer allocation and zero-copy frame access via memory mapping I/O (MMAP)
 - Continuous frame capture with explicit buffer dequeue and re-queue operations   
 
 `V4L2` · `Camera drivers` · `MMAP` · `Buffer management` · `Video streaming`
-
-3. **Multithreaded Producer-Consumer Architecture**
+---
+### 🔄 Multithreaded Producer-Consumer Architecture
 - Dedicated producer thread captures frames from the camera pipeline
 - Consumer thread streams encoded frames to connected HTTP clients
-- Lock-protected circular buffer ensure safe, low-latency data exchange between threads    
-
-`Mutex` · `Semaphore` · `Circular buffers` · `Multithreading` · `Producer-consumer model`
-
-4. **MJPEG HTTP Streaming**  [Notes on Notion](https://www.notion.so/hajjsalad/MJPEG-HTTP-Streaming-2cca741b5aab80d9ab6beddf8d86db00)
-
-- Lightweight HTTP server for serving video streams
-- Multipart MJPEG streaming compatible with web browsers and MJPEG clients     
-
-`HTTP` · `MJPEG` · `Sockets` · `Lightweight server` · `Multipart streams`
-
-5. **Real-Time Object Detection**  [Notes on Notion](https://www.notion.so/hajjsalad/Object-Detection-2d2a741b5aab80ac958fc72ffb4de8a4)
-- Performs on-device inference using TensorFlow Lite on captured frames
-- Optimized for real-time edge deployment on the Raspberry Pi    
-
-`Edge AI` · `Object Detection` · `Embedded ML` · `TensorFlow Lite` · `Real-time Inference`. 
-
----
-### 🧶 Threading Model
+- Lock-protected circular buffer ensure safe, low-latency data exchange between threads 
 - Producer Thread
   - Continously capture frames from the camera using V4L2
   - Converts raw frames to JPEG and pushes them into a circular buffer
@@ -67,6 +59,25 @@ This project demonstrates end-to-end system design across kernel space and user 
   
 This design allows for **producer thread** to run continously, while a new **consumer thread** is spawned per client.
 
+
+`Mutex` · `Semaphore` · `Circular buffers` · `Multithreading` · `Producer-consumer model`
+---
+### 🖼️ Image Processing Pipeline
+[Notes on Notion](https://www.notion.so/hajjsalad/Object-Detection-2d2a741b5aab80ac958fc72ffb4de8a4)
+- Performs on-device inference using TensorFlow Lite on captured frames
+- Optimized for real-time edge deployment on the Raspberry Pi    
+
+`Edge AI` · `Object Detection` · `Embedded ML` · `TensorFlow Lite` · `Real-time Inference`. 
+---
+### 📡 MJPEG HTTP Streaming**
+[Notes on Notion](https://www.notion.so/hajjsalad/MJPEG-HTTP-Streaming-2cca741b5aab80d9ab6beddf8d86db00)
+
+- Lightweight HTTP server for serving video streams
+- Multipart MJPEG streaming compatible with web browsers and MJPEG clients     
+
+`HTTP` · `MJPEG` · `Sockets` · `Lightweight server` · `Multipart streams`
+
+---
 ### 🏗️ High Level Flow
 ![Block Diagram](./Pi_cam_stream_Block_diagram.png)   
 
