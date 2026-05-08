@@ -11,7 +11,7 @@ This project demonstrates end-to-end system design across kernel space and user 
  
 👉 Explore the generated docs: [Doxygen Documentation](https://hajjsalad.github.io/RaspberryPi-Cam-Streamer/html/index.html)      
 👉 Explore how the documentation was structured and written: [Notes on Notion](https://www.notion.so/hajjsalad/Doxygen-Documentation-2dea741b5aab809989afdaf9d198430b).  
-👉 Each key feature includes a link to in-depth implementation notes that describe how the module was designed and built.
+👉 Each key feature includes a link to in-depth implementation notes that describe how the module was designed and built.   
 👉 This repository contains the backend implementation. The Android frontend is maintained in a separate repository: [Android Frontend repo](https://github.com/HajjSalad/RaspberryPi-Android-Video-Streaming)
 
 #### 🗝️ System Components
