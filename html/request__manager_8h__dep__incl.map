@@ -1,0 +1,7 @@
+<map id="src/http/request_manager.h" name="src/http/request_manager.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="89,5,289,31"/>
+<area shape="rect" id="Node000002" href="$request__manager_8c.html" title=" " alt="" coords="5,79,204,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="166,42,120,80,117,76,163,38"/>
+<area shape="rect" id="Node000003" href="$main_8c.html" title="Entry point for the Raspberry Pi MJPEG streaming." alt="" coords="228,79,317,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="214,38,261,76,257,80,211,42"/>
+</map>

@@ -1,0 +1,19 @@
+<map id="src/image/image_encoder.h" name="src/image/image_encoder.h">
+<area shape="rect" id="Node000001" title="Public API for image format conversion and JPEG compression." alt="" coords="628,5,829,31"/>
+<area shape="rect" id="Node000002" href="$camera_8c.html" title="Implementation of the V4L2 camera initialization and teardown routines." alt="" coords="5,86,164,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="615,31,410,51,176,81,136,89,135,83,175,76,409,46,614,26"/>
+<area shape="rect" id="Node000003" href="$circular__buffer_8c.html" title="Circular buffer implementation for storing JPEG frame pointers." alt="" coords="188,86,355,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="642,35,366,81,328,89,327,83,366,76,641,30"/>
+<area shape="rect" id="Node000004" href="$motion__detection_8c.html" title="Motion detection utilities for frame&#45;to&#45;frame analysis." alt="" coords="379,79,535,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="677,37,523,81,521,76,675,32"/>
+<area shape="rect" id="Node000005" href="$object__detection_8cpp.html" title="TensorFlow Lite–based object detection module." alt="" coords="559,79,709,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="706,41,659,81,655,76,703,37"/>
+<area shape="rect" id="Node000006" href="$mjpeg__stream_8c.html" title="MJPEG frame streaming over HTTP." alt="" coords="733,86,913,111"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="755,38,811,84,808,88,752,42"/>
+<area shape="rect" id="Node000007" href="$image__encoder_8c.html" title="Image format conversion and JPEG compression implementation." alt="" coords="938,86,1138,111"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="787,31,994,83,992,89,786,37"/>
+<area shape="rect" id="Node000008" href="$image__processor_8c.html" title="Image processing stage of the camera streaming pipeline." alt="" coords="1162,86,1373,111"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="826,30,1150,76,1198,83,1197,89,1150,81,826,35"/>
+<area shape="rect" id="Node000009" href="$main_8c.html" title="Entry point for the Raspberry Pi MJPEG streaming." alt="" coords="1397,86,1487,111"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="843,19,957,25,1094,35,1240,52,1385,76,1412,83,1411,89,1384,81,1239,57,1093,40,957,30,843,25"/>
+</map>

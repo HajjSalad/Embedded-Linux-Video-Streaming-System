@@ -1,0 +1,15 @@
+<map id="pipeline_ctx" name="pipeline_ctx">
+<area shape="rect" id="Node000001" title="Pipeline context for the producer&#45;consumer image pipeline." alt="" coords="229,181,330,207"/>
+<area shape="rect" id="Node000002" href="$structCircularBuffer.html" title="Circular buffer structure for storing pointers to JPEG frames." alt="" coords="5,93,116,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,121,251,179,249,184,102,126"/>
+<area shape="rect" id="Node000003" href="$structjpeg__frame.html" title="Container for a JPEG&#45;compressed image frame." alt="" coords="13,5,109,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="63,45,63,93,58,93,58,45"/>
+<area shape="rect" id="Node000004" href="$structcamera__ctx.html" title="Aggregates all state required for a V4L2 camera streaming session." alt="" coords="141,93,239,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="214,126,269,179,265,183,210,130"/>
+<area shape="rect" id="Node000005" href="$structbuffer.html" title="Describes a single memory&#45;mapped video buffer." alt="" coords="160,5,220,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="193,45,193,93,187,93,187,45"/>
+<area shape="rect" id="Node000006" href="$structstream__ctx.html" title="Streaming context for MJPEG server." alt="" coords="264,93,359,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="305,133,286,182,281,180,300,131"/>
+<area shape="rect" id="Node000007" href="$structdetector__ctx.html" title="Context structure for the object detection module." alt="" coords="383,93,485,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="403,128,302,183,299,179,400,123"/>
+</map>

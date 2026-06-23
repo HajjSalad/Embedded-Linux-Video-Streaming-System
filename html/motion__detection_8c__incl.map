@@ -1,0 +1,20 @@
+<map id="src/detection/motion_detection.c" name="src/detection/motion_detection.c">
+<area shape="rect" id="Node000001" title="Motion detection utilities for frame&#45;to&#45;frame analysis." alt="" coords="185,5,341,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,72,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,48,85,91,83,86,208,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="97,93,167,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="232,48,164,88,162,84,230,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="191,93,262,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="256,47,240,82,235,79,252,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="259,167,341,192"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="270,45,296,152,291,154,265,46"/>
+<area shape="rect" id="Node000006" href="$detection_8h.html" title=" " alt="" coords="338,93,433,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="294,43,357,84,354,88,291,48"/>
+<area shape="rect" id="Node000008" href="$image__encoder_8h.html" title="Public API for image format conversion and JPEG compression." alt="" coords="457,93,636,119"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="331,43,493,87,491,92,330,48"/>
+<area shape="poly" id="edge7_Node000006_Node000005" title=" " alt="" coords="373,121,326,160,323,156,370,117"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="366,167,437,192"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="391,118,398,153,393,154,385,120"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="509,167,584,192"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="549,119,549,153,544,153,544,119"/>
+</map>

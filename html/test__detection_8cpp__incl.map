@@ -1,0 +1,17 @@
+<map id="src/detection/test_detection.cpp" name="src/detection/test_detection.cpp">
+<area shape="rect" id="Node000001" title="Validation and sanity tests for the object detection pipeline." alt="" coords="234,5,369,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,72,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="236,48,86,96,80,98,78,93,84,91,235,43"/>
+<area shape="rect" id="Node000003" href="$detection_8h.html" title=" " alt="" coords="97,101,191,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="268,48,178,96,176,92,266,43"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="215,101,387,126"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="304,46,304,87,299,87,299,46"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="411,101,610,126"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="348,43,471,93,469,98,346,48"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="634,93,801,133"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="370,38,621,90,620,95,369,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="58,181,129,207"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="139,128,111,171,106,168,134,125"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="153,181,236,207"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="154,125,182,168,177,171,149,128"/>
+</map>

@@ -1,0 +1,7 @@
+var searchData=
+[
+  ['detect_5fmotion_0',['detect_motion',['../detection_8h.html#a0f9137fd5e703d32ea5312287f39adff',1,'detect_motion(struct rgb_frame *curr_frame):&#160;motion_detection.c'],['../motion__detection_8c.html#a0f9137fd5e703d32ea5312287f39adff',1,'detect_motion(struct rgb_frame *curr_frame):&#160;motion_detection.c']]],
+  ['detect_5fmotion_5fsad_1',['detect_motion_sad',['../detection_8h.html#a8e9fd379985df0b4a6d00c71bf6f9c5f',1,'detect_motion_sad(struct rgb_frame *prev_frame, struct rgb_frame *curr_frame):&#160;motion_detection.c'],['../motion__detection_8c.html#a8e9fd379985df0b4a6d00c71bf6f9c5f',1,'detect_motion_sad(struct rgb_frame *prev_frame, struct rgb_frame *curr_frame):&#160;motion_detection.c']]],
+  ['detector_5finit_2',['detector_init',['../detection_8h.html#a4d2c95d56abdf1592716e446211c46cc',1,'detector_init(struct detector_ctx *dctx):&#160;object_detection.cpp'],['../object__detection_8cpp.html#a4d2c95d56abdf1592716e446211c46cc',1,'detector_init(struct detector_ctx *dctx):&#160;object_detection.cpp']]],
+  ['draw_5fdetection_3',['draw_detection',['../detection_8h.html#a361c5488175c506e571a25dae0022e56',1,'draw_detection(struct rgb_frame *rgb, struct detection_result *result):&#160;object_detection.cpp'],['../object__detection_8cpp.html#a361c5488175c506e571a25dae0022e56',1,'draw_detection(struct rgb_frame *rgb, struct detection_result *result):&#160;object_detection.cpp']]]
+];
