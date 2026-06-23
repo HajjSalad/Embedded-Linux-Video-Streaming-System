@@ -26,11 +26,15 @@ test_detection
 # Ignore Build and Temporary Files
 /build/
 /dist/
-docs/
-/tmp/
+/tmp/  
 /*.bak
+test_detection
 *.lo
 trigger_server.py
+
+# Generated temporarily. CI copies docs into gh-pages/docs
+/docs  
+docs/
 
 # Ignore Editor / System Files
 *.swp
