@@ -91,7 +91,7 @@ int copy_rgb_frame(struct rgb_frame *src, struct rgb_frame *dst)
 * Difference (SAD) method on a subsampled grid for efficiency.
 *
 * Motion detection is performed on a subsampled grid with a factor of 4, meaning
-* only 1/16th of the pixeks are sampled to reduce computational load.
+* only 1/16th of the pixels are sampled to reduce computational load.
 *
 * Two motion detection approaches considered:
 *
